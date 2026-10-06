@@ -1,26 +1,280 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — sourced from Figma variables (get_variable_defs on 12215:1245 / 11995:44751).
+ * Names in comments are the Figma variable / style names.
+ */
+@theme {
+  /* Colors */
+  --color-brand: #17494d; /* Primary, Foreground/Brand */
+  --color-brand-deep: #0e2d2f; /* Footer (1440) background */
+  --color-brand-muted: rgb(23 73 77 / 0.5); /* Mobile expanded chevron border */
+  --color-gold: #ba8d46; /* Gold */
+  --color-ink: #110b34; /* Foundation/Blue/Normal — nav labels */
+  --color-fg: #0a0a0a; /* Foreground/Base */
+  --color-muted: #737373; /* Foreground/Muted */
+  --color-accent: #00bc4c; /* Active / open indicator */
+  --color-cream: #f7fbef; /* Header background */
+  --color-mint: #f2f8e7; /* Proven-work card background */
+  --color-subtle: #dbdbdb; /* Border/Subtle */
+  --color-inverse: #ffffff; /* Foreground/Base - inverse */
+  --color-surface: #fdfffa; /* Services section background */
+  --color-glass: rgb(255 255 255 / 0.7); /* Hero notification cards */
+  --color-chip: rgb(167 178 119 / 0.5); /* Service card link chip */
+  --color-overlay: rgb(0 0 0 / 0.4); /* Image card bottom scrim */
+  --color-mission-from: rgb(152 152 152 / 0.41); /* Mission card scrim */
+  --color-mission-to: rgb(50 49 49 / 0.41);
+  --color-wordmark-from: rgb(2 161 69 / 0.06); /* Hero "6SenseHQ" gradient */
+  --color-wordmark-to: rgb(102 102 102 / 0);
+  --color-olive: #68723e; /* Case-study headings */
+  --color-fg-subtle: #525252; /* Foreground/subtle2 — testimonial body */
+  --color-sage: #f3f8f1; /* FAQ + closing CTA background */
+  --color-sage-line: #bdceb6; /* FAQ dividers */
+  --color-pill: #eaeee5; /* "Read more" pill */
+  --color-review: #f6f9f2; /* Rating chip */
+  --color-panel: #f3fce4; /* Testimonial project panel */
+  --color-inverse-line: #fafafa; /* Border/Base - inverse */
+  --color-ink-green: #041603; /* About "We believe" lead line */
+  --color-veil: rgb(255 255 255 / 0.3); /* Rating badge glass */
+  --color-hero-scrim-from: rgb(255 255 255 / 0.25); /* About hero photo scrim */
+  --color-hero-scrim-to: rgb(0 0 0 / 0.5);
+  --color-lime: rgb(
+    205 248 140 / 0.5
+  ); /* Icon badge fill (#CDF88C @ 50%) — open calendar days */
+  --color-field: #f0f5e5; /* Contact form field fill */
+  --color-success: #166534; /* Foreground/Success */
+  --color-danger: #b91c1c; /* Form errors — no Figma variable; red-700 for 4.5:1 on surface */
+  --color-ochre: #7f6f34; /* Service hero title */
+  --color-ochre-deep: #483f1f; /* Service hero body */
+  --color-inverse-subtle: rgb(
+    255 255 255 / 0.6
+  ); /* Foreground/subtle - inverse */
+  --color-rule: rgb(
+    14 45 47 / 0.16
+  ); /* "The Right Way" timeline line (#0E2D2F @ 16%) */
+
+  /* Typography — size / line-height pairs from the type styles */
+  --font-sans:
+    var(--font-red-hat-display), ui-sans-serif, system-ui, sans-serif;
+  --font-contact: var(--font-lexend), ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs: 12px; /* Sm (12px)/reg */
+  --text-xs--line-height: 18px;
+  --text-sm: 14px; /* Base (14px) */
+  --text-sm--line-height: 21px;
+  --text-base: 16px; /* M (16px) */
+  --text-base--line-height: 24px;
+  --text-lg: 18px; /* Lg (18px) */
+  --text-lg--line-height: 27px;
+  --text-xl: 20px; /* H 4 (20px) */
+  --text-xl--line-height: 30px;
+  --text-2xl: 24px; /* H 3 (24px)/semi (1440px) */
+  --text-2xl--line-height: 36px;
+  --text-3xl: 30px; /* H 1 (36px)/semi (390px) */
+  --text-3xl--line-height: 45px;
+  --text-quote-sm: 28px; /* H 2 (30px)/semi (390px) */
+  --text-quote-sm--line-height: 42px;
+  --text-4xl: 36px; /* H 1 (36px)/semi (1440px) */
+  --text-4xl--line-height: 54px;
+  --text-button: 16px; /* P/Medium */
+  --text-button--line-height: 1.6;
+  --text-button--font-weight: 500;
+  --text-display: 48px; /* Display/semi (1440px) */
+  --text-display--line-height: 64px;
+  --text-display-sm: 32px; /* Display/semi (390px) */
+  --text-display-sm--line-height: 48px;
+  --text-contact: 14px; /* Footer contact (Lexend) */
+  --text-contact--line-height: 23px;
+  --text-contact--letter-spacing: 0.1px;
+
+  /* Layout */
+  --spacing-header: 96px;
+  --spacing-menu-compact: 350px; /* Resources popover min-height */
+  --container-content: 1240px;
+  --container-menu-column: 374px;
+  --container-footer-contact: 552px;
+  --container-proven-card: 269px;
+  --container-hero-copy: 614px;
+  --container-subheading: 557px; /* Section subheading copy (1440) */
+  --container-subheading-col: 640px; /* Section subheading column (1440) */
+  --container-mission-heading: 552px;
+  --container-notification: 349px; /* Hero notification card (front) */
+  --container-heading-title: 460px; /* Section title column when a subheading follows */
+  --container-case-intro: 440px;
+  --container-tech-group: 187px;
+  --container-testimonial: 862px; /* Active testimonial (1440) */
+  --container-testimonial-panel: 275px;
+  --container-faq-intro: 508px;
+  --container-faq-question: 620px;
+  --container-cta-copy: 640px;
+  --container-about-heading: 537px; /* About section title column (1440) */
+  --container-about-hero-copy: 527px;
+  --container-believe-copy: 502px;
+  --container-why-copy: 553px;
+  --container-feature-media: 435px; /* Leaf / arch image column */
+  --container-arch-media: 430px;
+
+  /* Homepage section rhythm */
+  --spacing-section: 112px;
+  --spacing-section-sm: 64px;
+  --spacing-hero: 748px;
+  --spacing-hero-media-sm: 283px;
+  --spacing-notification-card: 120px;
+  --spacing-badge: 76.385px; /* Round icon badge */
+  --spacing-mission-copy: 335px; /* Mission copy block (leaves room for icons) */
+  --spacing-service-lg: 484px;
+  --spacing-service-md: 416px;
+  --spacing-service-sm: 360px;
+  --spacing-service-sm-mobile: 349px;
+  --spacing-case-card: 663px;
+  --spacing-case-card-mobile: 776px;
+  --spacing-industry-card: 340px;
+  --spacing-industry-card-mobile: 394px;
+  --spacing-testimonials: 526px;
+  --spacing-avatar-lg: 76.385px;
+  --spacing-avatar-md: 72px;
+  --spacing-avatar-sm: 50px;
+  --spacing-clutch-w: 73px;
+  --spacing-news-lead: 798px;
+  --spacing-news-lead-mobile: 317px;
+  --spacing-news-thumb: 214px;
+  --spacing-insight-media: 200px;
+  --spacing-cta-band: 371px;
+  --spacing-cta-band-mobile: 529px;
+
+  /* About page */
+  --spacing-hero-about: 580px;
+  --spacing-portrait: 113px;
+  --spacing-portrait-sm: 157px;
+  --spacing-rating-w: 173px;
+  --spacing-rating-h: 52px;
+
+  /* Book a meeting */
+  --spacing-host-portrait: 195px; /* Host card photo (1440) */
+  --spacing-host-portrait-sm: 169px; /* Host card photo (390) */
+  --spacing-scheduler: 606px; /* Scheduler card min height (1440, 570 wide) */
+  --spacing-scheduler-sm: 395px; /* Scheduler card min height (390) */
+  --spacing-day: 44px; /* Calendar day button */
+  --container-hosts-heading: 570px; /* "Speak directly…" title column (1440) */
+  --container-scheduler-body: 440px; /* Calendar / form column inside the card */
+
+  /* Service pages (Figma "Service IOT" 12110:419 / 12110:831) */
+  --spacing-service-hero: 827px; /* Hero height (1440) */
+  --spacing-service-hero-sm: 828px; /* Hero height (390) */
+  --container-service-hero-copy: 720px; /* Hero heading block (1440) */
+  --container-split-media: 537px; /* Split section heading + image column */
+  --container-split-copy: 581px; /* Split section copy column */
+  --container-split-point: 515px; /* Light split-section point copy (1440) */
+
+  /* Radius / effects */
+  --radius-card: 16px; /* Radius/r-6 */
+  --radius-panel: 24px; /* Radius/r-8 */
+  --radius-card-lg: 32px;
+  --radius-chip: 8px; /* Radius/r-4 */
+  --radius-thumb: 12px; /* Radius/r-5 */
+  --radius-media: 20px; /* Radius/r-7 */
+  /* 218px opposite corners on the 537×522 "leaf" image, kept proportional as it scales. */
+  --radius-leaf: 40.596% 41.762%;
+  /* 350px corner on the 537×537 split-section image, kept proportional as it scales. */
+  --radius-quarter: 65.177%;
+  /* 350px corner on the 430×434 arch image, kept proportional as it scales. */
+  --radius-arch: 81.395% 80.645%;
+  --blur-glass: 4.15px;
+  --shadow-drawer: 0 13px 24px 0 rgb(0 0 0 / 0.12);
+  --shadow-scheduler: 0 1px 16px 0 rgb(0 0 0 / 0.12); /* "image 53" scheduler card */
+  --blur-button: 7px;
+  --blur-badge: 10px;
+
+  /* Aspect ratios */
+  --aspect-arch: 430 / 434; /* "Why 6sense HQ exists" image */
+  --aspect-leaf: 537 / 522; /* Service split-section "leaf" image */
+
+  /* Breakpoint where the desktop nav replaces the drawer */
+  --breakpoint-nav: 1024px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gutter: 16px;
+  /* Oversized "6SenseHQ" wordmark (220px at 1440) scales fluidly on tablet. */
+  --wordmark-size: clamp(140px, 15.28vw, 220px);
+  --footer-wordmark-size: var(--wordmark-size);
+  /* Services row at ≥1024: card widths as a share of the 1240 row (508 / 307). */
+  --service-w-lg: 40.968%;
+  --service-w-sm: 24.758%;
+  /* Expanded testimonial at ≥1024: 862 of the 1240 row. */
+  --testimonial-w-active: 69.516%;
+  /* Lead news story at ≥1024: 803 of the 1240 row. */
+  --news-w-lead: 64.758%;
+  /* Sticky stacked cards: first card sticks this far below the header. */
+  --stack-gap: 16px;
+  --stack-top: calc(var(--spacing-header) + var(--stack-gap));
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (width >= 48rem) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --gutter: 32px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Content width 1240 inside 1440 (100px side padding falls out naturally). */
+@utility container-site {
+  width: 100%;
+  max-width: calc(var(--container-content) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
+
+@layer base {
+  html {
+    scroll-padding-top: var(--spacing-header);
+  }
+
+  body {
+    background: var(--color-inverse);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-drawer-in {
+  animation: drawer-in 200ms ease-out;
+}
+
+/* Section padding: 64 at 390, 112 at 1440. */
+@utility section-y {
+  padding-block: var(--spacing-section-sm);
+  @media (width >= 64rem) {
+    padding-block: var(--spacing-section);
+  }
+}
+
+/* Bottom scrim for image cards; stops set per card via --overlay-from / --overlay-to. */
+@utility card-scrim {
+  background-image: linear-gradient(
+    to bottom,
+    transparent var(--overlay-from, 42.308%),
+    var(--color-overlay) var(--overlay-to, 71.154%)
+  );
+}
+
+/* Sticky stacked-card effect: desktop widths with enough height to show a card. */
+@custom-variant stack (@media (width >= 64rem) and (height >= 40rem));
+
+/* Entrance-animation start state: only when JS runs and motion is allowed. */
+@custom-variant motion-js (@media (scripting: enabled) and (prefers-reduced-motion: no-preference));

@@ -5,6 +5,7 @@ import type {
   FaqItem,
   FeatureCardItem,
   ImageAsset,
+  ImageCrop,
   LinkItem,
   OrbitLayer,
   Testimonial,
@@ -43,6 +44,15 @@ export type CaseStudy = {
   mobileImagePosition: string;
   /** object-position from 1024 (defaults to centre). */
   imagePosition?: string;
+  /** Below 1024 where the 390 frame differs from the desktop card (AI Automation proof 12365:4928). */
+  mobile?: {
+    /** Figma crop of the photo instead of object-cover. */
+    crop?: ImageCrop;
+    /** Scrim without the dark top veil. */
+    scrim?: string;
+    /** Dark meta line over a bright sky. */
+    darkMeta?: boolean;
+  };
   highlights: readonly string[];
   link: LinkItem;
   details: {

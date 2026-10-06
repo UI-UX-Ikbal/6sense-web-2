@@ -4,6 +4,7 @@ import type {
   FeatureCardSlots,
 } from "@/components/ui/FeatureCard";
 import { FeatureCardRow } from "@/components/ui/FeatureCardRow";
+import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -49,9 +50,22 @@ export function ServiceOfferingsSection({
 }) {
   return (
     <section aria-labelledby={HEADING_ID} className="bg-surface section-y">
-      <div className="container-site flex flex-col gap-8 lg:gap-9">
-        <Reveal>
-          <SectionHeading id={HEADING_ID} title={content.heading} />
+      <div
+        className={`container-site flex flex-col lg:gap-9 ${
+          content.spacious ? "gap-9" : "gap-8"
+        }`}
+      >
+        <Reveal className="flex items-center gap-12">
+          <SectionHeading
+            id={HEADING_ID}
+            title={content.heading}
+            className={`flex-1 ${content.brandHeadingFromLg ? "lg:text-brand" : ""}`}
+          />
+          {content.cta ? (
+            <ButtonLink href={content.cta.href} className="max-lg:hidden">
+              {content.cta.label}
+            </ButtonLink>
+          ) : null}
         </Reveal>
 
         <Reveal delay={120}>
@@ -62,6 +76,12 @@ export function ServiceOfferingsSection({
             initialActive={content.initialActive}
           />
         </Reveal>
+
+        {content.cta ? (
+          <ButtonLink href={content.cta.href} className="w-full lg:hidden">
+            {content.cta.label}
+          </ButtonLink>
+        ) : null}
       </div>
     </section>
   );

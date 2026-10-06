@@ -29,6 +29,7 @@ export function CaseStudyCard({
   mobileBadge,
 }: CaseStudyCardProps) {
   const tone = toneClasses[study.tone];
+  const { mobile } = study;
   const imagePosition = {
     "--img-pos": study.mobileImagePosition,
     "--img-pos-lg": study.imagePosition ?? "50% 50%",
@@ -45,13 +46,43 @@ export function CaseStudyCard({
         fill
         sizes="(min-width: 1304px) 1240px, 100vw"
         style={imagePosition}
-        className="-z-10 object-cover object-(--img-pos) lg:object-(--img-pos-lg)"
+        className={`-z-10 object-cover object-(--img-pos) lg:object-(--img-pos-lg) ${
+          mobile?.crop ? "max-lg:hidden" : ""
+        }`}
       />
+      {mobile?.crop ? (
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 overflow-hidden lg:hidden"
+        >
+          <Image
+            src={study.image.src}
+            alt=""
+            width={study.image.width}
+            height={study.image.height}
+            sizes="100vw"
+            className="absolute max-w-none"
+            style={{
+              left: mobile.crop.left,
+              top: mobile.crop.top,
+              width: mobile.crop.width,
+              height: mobile.crop.height,
+            }}
+          />
+        </div>
+      ) : null}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10"
+        className={`absolute inset-0 -z-10 ${mobile?.scrim ? "max-lg:hidden" : ""}`}
         style={{ backgroundImage: study.scrim }}
       />
+      {mobile?.scrim ? (
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 lg:hidden"
+          style={{ backgroundImage: mobile.scrim }}
+        />
+      ) : null}
 
       <div className="flex min-h-0 flex-1 flex-col justify-between">
         <div className="flex items-start gap-2 lg:gap-4">
@@ -70,7 +101,13 @@ export function CaseStudyCard({
             className="hidden shrink-0 lg:block"
           />
           <div className="flex min-w-0 flex-1 flex-col gap-2.5 lg:pr-28">
-            <p className={`text-base lg:text-lg ${tone.meta}`}>{study.meta}</p>
+            <p
+              className={`text-base lg:text-lg ${
+                mobile?.darkMeta ? "text-fg lg:text-inverse" : tone.meta
+              }`}
+            >
+              {study.meta}
+            </p>
             <h3
               id={titleId}
               className={`text-3xl font-semibold lg:text-4xl ${tone.title}`}

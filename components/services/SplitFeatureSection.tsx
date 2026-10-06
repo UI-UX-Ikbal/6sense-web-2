@@ -27,40 +27,83 @@ const toneClasses = {
 
 const shapeClasses = {
   leaf: "aspect-leaf rounded-tl-leaf rounded-br-leaf",
+  "leaf-short": "aspect-leaf-short rounded-tl-leaf-short rounded-br-leaf-short",
   quarter: "aspect-square rounded-tr-quarter",
 } as const;
 
-type Tone = SplitSectionContent["tone"];
+const pointKey = (point: SplitPoint) => point.title ?? point.body[0];
 
-function PointCopy({ point, tone }: { point: SplitPoint; tone: Tone }) {
-  const classes = toneClasses[tone];
+function PointCopy({
+  point,
+  content,
+}: {
+  point: SplitPoint;
+  content: SplitSectionContent;
+}) {
+  const classes = toneClasses[content.tone];
+  const large = content.scale === "large";
+  const titleSize = large ? "text-xl" : "text-lg lg:text-xl";
+  const bodySize =
+    large || content.bigBody ? "text-base" : "text-sm lg:text-base";
+  // Dark "bulleted" points (EV & Mobility) use bold titles; the IoT dark list does not.
+  const bulletedTitle =
+    content.tone === "dark" ? "font-bold text-inverse" : classes.title;
+  const darkBold = content.tone === "dark" && content.boldTitles;
+  const bodyColor = content.strongBody
+    ? "text-fg"
+    : darkBold
+      ? "text-inverse-muted"
+      : classes.body;
+  const titleWeight = darkBold
+    ? "font-bold text-inverse"
+    : content.bulleted
+      ? bulletedTitle
+      : content.regularTitles
+        ? classes.title.replace("font-bold ", "")
+        : classes.title;
   return (
     <span className={`flex flex-col gap-2 ${classes.copy}`}>
-      <span className={`block text-lg lg:text-xl ${classes.title}`}>
-        {point.title}
-      </span>
-      {point.body.map((paragraph) => (
-        <span
-          key={paragraph}
-          className={`block text-sm lg:text-base ${classes.body}`}
-        >
-          {paragraph}
+      {point.title ? (
+        <span className={`block ${titleSize} ${titleWeight}`}>
+          {point.title}
         </span>
-      ))}
+      ) : null}
+      {content.bulleted ? (
+        <ul className={`list-disc ps-5.25 lg:ps-6 ${bodySize} ${bodyColor}`}>
+          {point.body.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        point.body.map((paragraph) => (
+          <span key={paragraph} className={`block ${bodySize} ${bodyColor}`}>
+            {paragraph}
+          </span>
+        ))
+      )}
     </span>
   );
 }
 
+/** Gap between lead, points, footnote and actions: dark 18; light 24 (→18 from 1024 unless bulleted / led by paragraphs). */
+function copyGap(content: SplitSectionContent) {
+  if (content.bulleted && content.tone === "dark") return "gap-4.5";
+  if (content.tone === "light" && (content.bulleted || content.airy)) {
+    return "gap-6";
+  }
+  return content.bulleted ? "gap-4.5" : "gap-6 lg:gap-4.5";
+}
+
 /** Points led by an icon badge (light tone) or a numbered badge (dark tone). */
 function PointList({ content }: { content: SplitSectionContent }) {
-  const { points, pointIcon, tone } = content;
+  const { points, pointIcon } = content;
 
   if (pointIcon) {
     return (
       <ul className="flex flex-col gap-6">
         {points.map((point) => (
-          <IconPoint key={point.title} icon={pointIcon}>
-            <PointCopy point={point} tone={tone} />
+          <IconPoint key={pointKey(point)} icon={pointIcon}>
+            <PointCopy point={point} content={content} />
           </IconPoint>
         ))}
       </ul>
@@ -70,14 +113,14 @@ function PointList({ content }: { content: SplitSectionContent }) {
   return (
     <ol className="flex flex-col gap-6">
       {points.map((point, index) => (
-        <li key={point.title} className="flex items-start gap-3">
+        <li key={pointKey(point)} className="flex items-start gap-3">
           <span
             aria-hidden
             className="flex size-8 shrink-0 items-center justify-center rounded-full bg-lime text-xl text-inverse"
           >
             {index + 1}
           </span>
-          <PointCopy point={point} tone={tone} />
+          <PointCopy point={point} content={content} />
         </li>
       ))}
     </ol>
@@ -95,6 +138,10 @@ export function SplitFeatureSection({
   content: SplitSectionContent;
 }) {
   const tone = toneClasses[content.tone];
+  const large = content.scale === "large";
+  const airy = content.bulleted || content.airy;
+  const leads =
+    typeof content.lead === "string" ? [content.lead] : (content.lead ?? []);
   const headingId = `${content.id}-heading`;
   const columns = content.wideCopy
     ? "lg:grid-cols-[minmax(0,var(--container-split-media))_minmax(0,1fr)]"
@@ -104,13 +151,21 @@ export function SplitFeatureSection({
     <section
       id={content.id}
       aria-labelledby={headingId}
-      className={`section-y ${tone.section}`}
+      className={`section-y ${tone.section} ${
+        content.tightMobile ? "max-lg:py-12" : ""
+      }`}
     >
-      <div className={`container-site grid lg:gap-12 ${tone.grid} ${columns}`}>
-        <Reveal className={`flex flex-col ${tone.media}`}>
+      <div
+        className={`container-site grid lg:gap-12 ${
+          airy ? "gap-12" : tone.grid
+        } ${columns}`}
+      >
+        <Reveal
+          className={`flex flex-col ${large || content.airy ? "gap-12" : tone.media}`}
+        >
           <h2
             id={headingId}
-            className={`text-3xl font-semibold lg:text-4xl ${tone.heading} ${
+            className={`font-semibold whitespace-pre-line ${large ? "text-4xl" : "text-3xl lg:text-4xl"} ${tone.heading} ${
               content.headingAlign === "end" ? "text-right" : ""
             } ${content.narrowHeading ? "lg:max-w-arch-media" : ""}`}
           >
@@ -132,13 +187,39 @@ export function SplitFeatureSection({
           </div>
         </Reveal>
 
-        <Reveal delay={120} className="flex flex-col gap-6 pt-4 lg:gap-4.5">
-          {content.lead ? (
-            <p className="text-lg text-ink-green lg:text-xl">{content.lead}</p>
+        <Reveal
+          delay={120}
+          className={`flex flex-col pt-4 ${copyGap(content)} ${
+            content.narrowCopy ? "lg:max-w-split-copy-narrow" : ""
+          }`}
+        >
+          {leads.length > 0 ? (
+            <div className="flex flex-col gap-6">
+              {leads.map((lead) => (
+                <p
+                  key={lead}
+                  className={`${
+                    content.smallLead
+                      ? "text-base lg:text-lg"
+                      : "text-lg lg:text-xl"
+                  } ${
+                    content.tone === "dark" ? "text-inverse" : "text-ink-green"
+                  }`}
+                >
+                  {lead}
+                </p>
+              ))}
+            </div>
           ) : null}
           <PointList content={content} />
           {content.footnote ? (
-            <p className="text-sm text-ink-green lg:text-base">
+            <p
+              className={
+                content.tone === "dark"
+                  ? "text-lg text-inverse lg:text-xl"
+                  : "text-sm text-ink-green lg:text-base"
+              }
+            >
               {content.footnote}
             </p>
           ) : null}
@@ -146,17 +227,21 @@ export function SplitFeatureSection({
             <div className="flex flex-col gap-4 md:flex-row md:gap-6">
               <ButtonLink
                 href={content.actions.primary.href}
-                className="max-md:text-sm"
+                className={
+                  content.actions.secondary ? "max-md:text-sm" : undefined
+                }
               >
                 {content.actions.primary.label}
               </ButtonLink>
-              <ButtonLink
-                href={content.actions.secondary.href}
-                variant="outline-dark"
-                className="max-md:text-sm"
-              >
-                {content.actions.secondary.label}
-              </ButtonLink>
+              {content.actions.secondary ? (
+                <ButtonLink
+                  href={content.actions.secondary.href}
+                  variant="outline-dark"
+                  className="max-md:text-sm"
+                >
+                  {content.actions.secondary.label}
+                </ButtonLink>
+              ) : null}
             </div>
           ) : null}
         </Reveal>

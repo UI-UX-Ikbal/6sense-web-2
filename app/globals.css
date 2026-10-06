@@ -45,10 +45,14 @@
   --color-success: #166534; /* Foreground/Success */
   --color-danger: #b91c1c; /* Form errors — no Figma variable; red-700 for 4.5:1 on surface */
   --color-ochre: #7f6f34; /* Service hero title */
+  --color-umber: #4d431e; /* EV & Mobility hero title */
   --color-ochre-deep: #483f1f; /* Service hero body */
   --color-inverse-subtle: rgb(
     255 255 255 / 0.6
   ); /* Foreground/subtle - inverse */
+  --color-inverse-muted: rgb(
+    255 255 255 / 0.8
+  ); /* Foreground/muted - inverse (AI Automation dark lists) */
   --color-rule: rgb(
     14 45 47 / 0.16
   ); /* "The Right Way" timeline line (#0E2D2F @ 16%) */
@@ -141,6 +145,7 @@
   --spacing-insight-media: 200px;
   --spacing-cta-band: 371px;
   --spacing-cta-band-mobile: 529px;
+  --spacing-cta-band-mobile-tall: 761px; /* AI Automation closing CTA (390) */
 
   /* About page */
   --spacing-hero-about: 580px;
@@ -161,9 +166,13 @@
   /* Service pages (Figma "Service IOT" 12110:419 / 12110:831) */
   --spacing-service-hero: 827px; /* Hero height (1440) */
   --spacing-service-hero-sm: 828px; /* Hero height (390) */
+  --spacing-service-hero-tall: 872px; /* EV & Mobility hero height (390) */
+  --spacing-service-hero-xtall: 956px; /* Energy Software hero height (390) */
   --container-service-hero-copy: 720px; /* Hero heading block (1440) */
   --container-split-media: 537px; /* Split section heading + image column */
+  --container-capability-sub: 640px; /* "Where we plug in" subheading */
   --container-split-copy: 581px; /* Split section copy column */
+  --container-split-copy-narrow: 502px; /* Narrow split-section copy column (AI Automation) */
   --container-split-point: 515px; /* Light split-section point copy (1440) */
 
   /* Radius / effects */
@@ -175,6 +184,8 @@
   --radius-media: 20px; /* Radius/r-7 */
   /* 218px opposite corners on the 537×522 "leaf" image, kept proportional as it scales. */
   --radius-leaf: 40.596% 41.762%;
+  /* 218px opposite corners on the 537×413 "leaf-short" image (Where we work), kept proportional. */
+  --radius-leaf-short: 40.596% 52.785%;
   /* 350px corner on the 537×537 split-section image, kept proportional as it scales. */
   --radius-quarter: 65.177%;
   /* 350px corner on the 430×434 arch image, kept proportional as it scales. */
@@ -188,6 +199,7 @@
   /* Aspect ratios */
   --aspect-arch: 430 / 434; /* "Why 6sense HQ exists" image */
   --aspect-leaf: 537 / 522; /* Service split-section "leaf" image */
+  --aspect-leaf-short: 537 / 413; /* EV & Mobility "Where we work" image */
 
   /* Breakpoint where the desktop nav replaces the drawer */
   --breakpoint-nav: 1024px;

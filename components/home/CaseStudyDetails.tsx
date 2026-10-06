@@ -6,6 +6,8 @@ type CaseStudyDetailsProps = {
   details: CaseStudy["details"];
   primaryCta: LinkItem;
   secondaryCta: LinkItem;
+  /** 16px gap between tech groups below 1024 instead of 12 (AI Automation 12365:4964). */
+  roomyGroups?: boolean;
 };
 
 function Actions({
@@ -39,6 +41,7 @@ export function CaseStudyDetails({
   details,
   primaryCta,
   secondaryCta,
+  roomyGroups = false,
 }: CaseStudyDetailsProps) {
   return (
     <div className="flex flex-col items-center gap-8 bg-surface px-3 pt-8 pb-16 lg:px-8 lg:pt-16 lg:pb-32">
@@ -54,7 +57,11 @@ export function CaseStudyDetails({
           />
         </div>
 
-        <div className="grid min-w-0 flex-1 grid-cols-2 gap-3 lg:gap-x-12 lg:gap-y-8">
+        <div
+          className={`grid min-w-0 flex-1 grid-cols-2 lg:gap-x-12 lg:gap-y-8 ${
+            roomyGroups ? "gap-4" : "gap-3"
+          }`}
+        >
           {details.groups.map((group) => (
             <div key={group.title} className="flex flex-col gap-2">
               <p className="text-sm font-semibold text-fg lg:w-tech-group">

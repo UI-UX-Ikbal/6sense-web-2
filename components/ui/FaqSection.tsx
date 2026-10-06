@@ -11,13 +11,16 @@ type FaqSectionProps = {
   content: FaqContent;
   /** id for the section heading (aria-labelledby). */
   headingId?: string;
-  /** compact: 18 / 14 type below 1024 (homepage). large: 20 / 16 at every width (IoT 12110:1079). */
-  type?: "compact" | "large";
+  /** compact: 18 / 14 type below 1024 (homepage). large: 20 / 16 at every width (IoT 12110:1079). mixed: 18 / 16 below 1024 (AI Automation 12356:1351). */
+  type?: "compact" | "large" | "mixed";
+  /** Keep answers clear of the toggle icon below 1024 (EV & Mobility 12167:2117). */
+  insetAnswers?: boolean;
 };
 
 const typeClasses = {
   compact: { question: "text-lg lg:text-xl", answer: "text-sm lg:text-base" },
   large: { question: "text-xl", answer: "text-base" },
+  mixed: { question: "text-lg lg:text-xl", answer: "text-base" },
 } as const;
 
 /**
@@ -28,6 +31,7 @@ export function FaqSection({
   content,
   headingId = "faq-heading",
   type = "compact",
+  insetAnswers = false,
 }: FaqSectionProps) {
   const typography = typeClasses[type];
   const baseId = useId();
@@ -47,7 +51,7 @@ export function FaqSection({
   return (
     <section aria-labelledby={headingId} className="bg-sage section-y">
       <div className="container-site flex flex-col gap-6 lg:flex-row">
-        <Reveal className="flex items-start gap-6 lg:w-faq-intro lg:shrink-0 lg:flex-col lg:pr-16">
+        <Reveal className="flex items-start gap-4 lg:w-faq-intro lg:shrink-0 lg:flex-col lg:gap-6 lg:pr-16">
           <h2
             id={headingId}
             className="min-w-0 flex-1 text-3xl font-semibold text-brand lg:flex-none lg:text-4xl"
@@ -91,7 +95,7 @@ export function FaqSection({
                       alt=""
                       width={32}
                       height={32}
-                      className="shrink-0"
+                      className={`shrink-0 ${isOpen ? "-mb-0.5" : ""}`}
                     />
                   </button>
                 </h3>
@@ -106,7 +110,9 @@ export function FaqSection({
                 >
                   <div className="overflow-hidden">
                     <p
-                      className={`pt-2 text-muted lg:w-faq-question ${typography.answer}`}
+                      className={`pt-2 whitespace-pre-line text-muted lg:w-faq-question ${typography.answer} ${
+                        insetAnswers ? "max-lg:pe-12" : ""
+                      }`}
                     >
                       {item.answer ?? siteContent.faqAnswerPlaceholder}
                     </p>

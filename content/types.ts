@@ -97,8 +97,15 @@ export type FaqContent = {
 /** Closing call-to-action band. */
 export type CtaContent = {
   heading: string;
-  body: string;
+  /** One paragraph, or several. */
+  body: string | readonly string[];
   link: LinkItem;
+  /** White pill beside the primary button (AI Automation). */
+  secondaryLink?: LinkItem;
+  /** 761px band below 1024 for the longer two-paragraph copy (AI Automation 12356:1410). */
+  tallOnMobile?: boolean;
+  /** "fill" stretches the photo to the band like Figma's unconstrained fill (AI Automation). */
+  imageFit?: "cover" | "fill";
   image: ImageAsset;
   mobileImage: ImageAsset;
   orbitStates?: readonly (readonly OrbitLayer[])[];

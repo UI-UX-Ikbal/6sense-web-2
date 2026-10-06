@@ -64,7 +64,10 @@ export const routes = {
   privacyPolicy: "/privacy-policy",
   terms: "/terms-and-conditions",
   caseStudyCos: "/case-studies/cos",
-  servicesIot: "/services/iot",
+  servicesIot: "/services/iot-platform-providers",
+  servicesEvMobility: "/services/ev-charging-emobility",
+  servicesEnergy: "/services/energy-management-platforms",
+  servicesAiAutomation: "/services/ai-automation-company",
 } as const;
 
 const readCaseStudy = "Read Case Study";
@@ -128,7 +131,7 @@ export const navItems: NavItem[] = [
           links: [
             {
               label: "IoT Platform Providers",
-              href: "/services/iot-platform-providers",
+              href: routes.servicesIot,
             },
             {
               label: "Connected Equipment Manufacturers",
